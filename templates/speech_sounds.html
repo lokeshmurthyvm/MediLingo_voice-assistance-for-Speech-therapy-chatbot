@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Sounds Practice</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+        <div class="container mx-auto">
+            <a href="/" class="text-white font-bold">Home</a>
+            <a href="/speech_therapy" class="text-white ml-4">Speech Therapy Assistant</a>
+        </div>
+    </nav>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Speech Sounds Practice</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- S Sound Section -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">'S' Sound Practice</h2>
+                <div class="space-y-4">
+                    <div class="practice-item">
+                        <p class="mb-2">Simple 'S': "Sun"</p>
+                        <audio controls>
+                            <source src="/static/audio/s_sun.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="practice-item">
+                        <p class="mb-2">Initial 'S': "Snake"</p>
+                        <audio controls>
+                            <source src="/static/audio/s_snake.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+            </div>
+
+            <!-- R Sound Section -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">'R' Sound Practice</h2>
+                <div class="space-y-4">
+                    <div class="practice-item">
+                        <p class="mb-2">Simple 'R': "Red"</p>
+                        <audio controls>
+                            <source src="/static/audio/r_red.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="practice-item">
+                        <p class="mb-2">Initial 'R': "Rain"</p>
+                        <audio controls>
+                            <source src="/static/audio/r_rain.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TH Sound Section -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">'TH' Sound Practice</h2>
+                <div class="space-y-4">
+                    <div class="practice-item">
+                        <p class="mb-2">Soft 'TH': "Think"</p>
+                        <audio controls>
+                            <source src="/static/audio/th_think.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

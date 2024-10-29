@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naming Exercises</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl font-bold mb-6 text-blue-600">Object Naming Practice</h2>
+
+        <!-- Object Naming Section -->
+        <div class="mb-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="objectsContainer">
+                <!-- Objects will be dynamically added here -->
+            </div>
+            <button id="newObjects" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">
+                New Objects
+            </button>
+        </div>
+
+        <!-- Recording Section -->
+        <div class="mt-8">
+            <h3 class="text-xl font-bold mb-4">Record Your Practice</h3>
+            <div class="space-y-4">
+                <button id="startRecording" class="bg-blue-500 text-white px-4 py-2 rounded">
+                    Start Recording
+                </button>
+                <button id="stopRecording" class="bg-red-500 text-white px-4 py-2 rounded" disabled>
+                    Stop Recording
+                </button>
+                <div id="recordingStatus" class="text-gray-600"></div>
+                <div id="audioPlayback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const objects = [
+            'apple', 'book', 'chair', 'door', 'elephant', 'flower', 
+            'glasses', 'house', 'ice cream', 'jacket', 'key', 'lamp',
+            'moon', 'notebook', 'orange', 'pencil', 'queen', 'rabbit',
+            'sun', 'table', 'umbrella', 'violin', 'watch', 'xylophone',
+            'yacht', 'zebra'
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function loadNewObjects() {
+            const container = document.getElementById('objectsContainer');
+            container.innerHTML = '';
+            
+            const selectedObjects = shuffleArray([...objects]).slice(0, 8);
+            
+            selectedObjects.forEach(object => {
+                const div = document.createElement('div');
+                div.className = 'text-center p-4 border rounded';
+                div.innerHTML = `
+                    <img src="/static/images/objects/${object}.jpg" 
+                         alt="${object}" 
+                         class="w-full h-32 object-cover rounded mb-2">
+                    <button class="bg-gray-200 px-4 py-1 rounded w-full"
+                            onclick="showObjectName(this, '${object}')">
+                        Show Name
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showObjectName(button, name) {
+            button.textContent = name;
+            button.disabled = true;
+            button.className = 'bg-blue-100 px-4 py-1 rounded w-full';
+        }
+
+        // Initialize with first set of objects
+        loadNewObjects();
+
+        // New Objects button
+        document.getElementById('newObjects').addEventListener('click', loadNewObjects);
+
+        // Recording functionality
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById('startRecording').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = document.createElement('audio');
+                    audio.src = audioUrl;
+                    audio.controls = true;
+                    document.getElementById('audioPlayback').innerHTML = '';
+                    document.getElementById('audioPlayback').appendChild(audio);
+                };
+                
+                mediaRecorder.start();
+                document.getElementById('startRecording').disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+                document.getElementById('recordingStatus').textContent = 'Recording...';
+                audioChunks = [];
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+            }
+        });
+
+        document.getElementById('stopRecording').addEventListener('click', () => {
+            mediaRecorder.stop();
+            document.getElementById('startRecording').disabled = false;
+            document.getElementById('stopRecording').disabled = true;
+            document.getElementById('recordingStatus').textContent = 'Recording stopped';
+        });
+    </script>
+</body>
+</html> 

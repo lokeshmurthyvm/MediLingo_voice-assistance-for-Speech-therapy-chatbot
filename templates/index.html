@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Therapy Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Add your custom styles here */
+        .chat-container {
+            position: relative;
+            height: calc(100vh - 200px);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            background: #5A5EB9;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        .chat-input {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            width: 15%;
+            padding: 10px;
+            background: #5A5EB9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        .user-message {
+            margin-left: auto;
+            background: #5A5EB9;
+            color: white;
+            padding: 10px;
+            border-radius: 15px 15px 0 15px;
+        }
+        .bot-message {
+            margin-right: auto;
+            background: white;
+            padding: 12px;
+            border-radius: 15px 15px 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 12px;
+        }
+        .bot-message .exercise-options {
+            margin-top: 8px;
+        }
+        .exercise-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: #5A5EB9;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .exercise-button:hover {
+            background: #4a4ea0;
+        }
+        .exercise-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .exercise-button {
+            background-color: #5A5EB9;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 4px;
+            font-size: 14px;
+        }
+        .exercise-button:hover {
+            background-color: #4a4ea0;
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        .bot-message {
+            margin-right: auto;
+            background: white;
+            padding: 12px;
+            border-radius: 15px 15px 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .user-message {
+            margin-left: auto;
+            background: #5A5EB9;
+            color: white;
+            padding: 10px;
+            border-radius: 15px 15px 0 15px;
+        }
+        .audio-player {
+            margin-top: 8px;
+        }
+        .audio-player audio {
+            width: 100%;
+        }
+        .practice-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .practice-item audio {
+            width: 100%;
+            margin-top: 8px;
+        }
+        #exercise-content {
+            transition: all 0.3s ease;
+        }
+        .word-bank span {
+            display: inline-block;
+            margin: 4px;
+            padding: 6px 12px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .timer-display {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .practice-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .timer-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-top: 8px;
+        }
+        .exercise-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        #currentTwister {
+            font-size: 1.25rem;
+            color: #2d3748;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .practice-item ol li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+        <div class="container mx-auto">
+            <a href="/" class="text-white font-bold">Home</a>
+        </div>
+    </nav>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Speech Therapy Assistant</h1>
+        
+        <div class="flex gap-6">
+            <!-- Left Area for Exercise Content -->
+            <div id="exercise-content" class="w-2/3 hidden">
+                <!-- Exercise content will be loaded here -->
+            </div>
+
+            <!-- Right Area for Chat -->
+            <div class="chat-container w-1/3">
+                <div class="chat-header">
+                    Speech Therapy Assistant
+                </div>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input">
+                    <input type="text" id="user-input" placeholder="Type your message...">
+                    <button id="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Define exercise types and their corresponding exercises
+            const exerciseTypes = {
+                'breathing': ['Deep Breathing', 'Diaphragmatic Breathing'],
+                'articulation': ['Tongue Twisters'],
+                'tongue': ['Tongue Exercises'],
+                'naming': ['Object Naming'],
+                'sentence': ['Sentence Formation'],
+                'speech_sounds': ['S Sound', 'R Sound', 'TH Sound']
+            };
+
+            function createExerciseButtons(exercises) {
+                let buttonsHtml = '<div class="exercise-options">';
+                exercises.forEach(exercise => {
+                    buttonsHtml += `
+                        <button class="exercise-button" data-exercise="${exercise}">
+                            ${exercise}
+                        </button>`;
+                });
+                buttonsHtml += '</div>';
+                return buttonsHtml;
+            }
+
+            function createExerciseTypeButtons(exerciseTypes) {
+                let buttonsHtml = '<div class="exercise-options">';
+                exerciseTypes.forEach(type => {
+                    const displayName = type.replace(/_/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                    buttonsHtml += `
+                        <button class="exercise-button" data-type="${type}">
+                            ${displayName}
+                        </button>`;
+                });
+                buttonsHtml += '</div>';
+                return buttonsHtml;
+            }
+
+            function appendMessage(sender, message, isUser = false) {
+                const messageClass = isUser ? 'user-message' : 'bot-message';
+                const messageDiv = $(`<div class="message ${messageClass}"></div>`);
+                
+                if (typeof message === 'string' && message.includes('<div')) {
+                    messageDiv.html(message);
+                } else {
+                    messageDiv.text(message);
+                }
+                
+                $('#chat-messages').append(messageDiv);
+                $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+            }
+
+            function handleChatbotResponse(data) {
+                // Append the text response
+                appendMessage('Assistant', data.response);
+                
+                // If there are exercises to show
+                if (data.exercises && data.exercises.length > 0) {
+                    // Create buttons HTML
+                    const buttonsHtml = createExerciseTypeButtons(data.exercises);
+                    // Append buttons as a separate message
+                    appendMessage('Assistant', buttonsHtml);
+                }
+            }
+
+            // Handle sending messages
+            $('#send-btn').click(function() {
+                const userMessage = $('#user-input').val().trim();
+                if (userMessage) {
+                    appendMessage('You', userMessage, true);
+                    $('#user-input').val('');
+
+                    $.ajax({
+                        url: '/chatbot',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ message: userMessage }),
+                        success: handleChatbotResponse
+                    });
+                }
+            });
+
+            // Handle exercise type button clicks
+            $(document).on('click', '.exercise-button[data-type]', function() {
+                const exerciseType = $(this).data('type');
+                const message = `Show me ${exerciseType} exercises`;
+                appendMessage('You', message, true);
+                
+                // Load exercise content
+                loadExerciseContent(exerciseType);
+                
+                $.ajax({
+                    url: '/chatbot',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: message }),
+                    success: handleChatbotResponse
+                });
+            });
+
+            // Handle specific exercise button clicks
+            $(document).on('click', '.exercise-button[data-exercise]', function() {
+                const exercise = $(this).data('exercise');
+                $.ajax({
+                    url: '/start_exercise',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ exercise: exercise }),
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            appendMessage('Assistant', data.instruction);
+                            if (data.audio) {
+                                const audioHtml = `
+                                    <div class="audio-player mt-2">
+                                        <audio controls>
+                                            <source src="${data.audio}" type="audio/mpeg">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>`;
+                                appendMessage('Assistant', audioHtml);
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Handle Enter key
+            $('#user-input').keypress(function(e) {
+                if (e.which == 13) {
+                    $('#send-btn').click();
+                }
+            });
+
+            // Initial greeting
+            appendMessage('Assistant', 'Hello! I can help you with various speech therapy exercises. What would you like to practice?');
+        });
+
+        // Add recording functionality
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById('startRecording').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = document.createElement('audio');
+                    audio.src = audioUrl;
+                    audio.controls = true;
+                    document.getElementById('audioPlayback').innerHTML = '';
+                    document.getElementById('audioPlayback').appendChild(audio);
+                };
+                
+                mediaRecorder.start();
+                document.getElementById('startRecording').disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+                document.getElementById('recordingStatus').textContent = 'Recording...';
+                audioChunks = [];
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+            }
+        });
+
+        document.getElementById('stopRecording').addEventListener('click', () => {
+            mediaRecorder.stop();
+            document.getElementById('startRecording').disabled = false;
+            document.getElementById('stopRecording').disabled = true;
+            document.getElementById('recordingStatus').textContent = 'Recording stopped';
+        });
+
+        // Update the showExerciseContent function
+        function showExerciseContent(exerciseType) {
+            const exerciseContent = $('#exercise-content');
+            const exerciseTitle = $('#exercise-title');
+            
+            // Hide all exercise-specific content first
+            $('#speech-sounds-content').hide();
+            
+            // Show the exercise content area
+            exerciseContent.removeClass('hidden');
+            
+            // Update title and show specific content based on exercise type
+            if (exerciseType === 'speech_sounds') {
+                exerciseTitle.text('Speech Sounds Practice');
+                $('#speech-sounds-content').show();
+            }
+            // Add other exercise types as needed
+        }
+
+        // Breathing Exercise Timers
+        function initializeBreathingTimers() {
+            ['startBreathingTimer', 'startDiaphragmaticTimer'].forEach(buttonId => {
+                document.getElementById(buttonId).addEventListener('click', function() {
+                    const timerId = buttonId === 'startBreathingTimer' ? 'breathingTimer' : 'diaphragmaticTimer';
+                    startBreathingTimer(timerId);
+                });
+            });
+        }
+
+        function startBreathingTimer(timerId) {
+            let timeLeft = 30;
+            const timerDisplay = document.getElementById(timerId);
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `${timeLeft} seconds`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerDisplay.textContent = 'Complete!';
+                }
+            }, 1000);
+        }
+
+        // Naming Exercise Functions
+        const objects = ['apple', 'book', 'chair', 'door', 'elephant', 'flower', 'glasses', 'house'];
+
+        function loadNewObjects() {
+            const container = document.getElementById('objectsToName');
+            container.innerHTML = '';
+            
+            // Select 4 random objects
+            const selectedObjects = objects
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 4);
+            
+            selectedObjects.forEach(object => {
+                const div = document.createElement('div');
+                div.className = 'text-center';
+                div.innerHTML = `
+                    <img src="/static/images/${object}.jpg" alt="${object}" class="w-full h-32 object-cover rounded">
+                    <button class="mt-2 bg-gray-200 px-2 py-1 rounded" onclick="showObjectName(this, '${object}')">
+                        Show Name
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showObjectName(button, name) {
+            button.textContent = name;
+            button.disabled = true;
+        }
+
+        // Sentence Exercise Functions
+        const wordSets = [
+            ['cat', 'sleep', 'mat', 'the', 'on'],
+            ['dog', 'play', 'ball', 'with', 'the'],
+            ['bird', 'sing', 'tree', 'in', 'the']
+        ];
+
+        function loadNewWords() {
+            const wordBank = document.getElementById('wordBank');
+            wordBank.innerHTML = '';
+            
+            const randomSet = wordSets[Math.floor(Math.random() * wordSets.length)];
+            
+            randomSet.forEach(word => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'bg-gray-200 px-3 py-1 rounded';
+                wordSpan.textContent = word;
+                wordBank.appendChild(wordSpan);
+            });
+        }
+
+        // Initialize recording functionality for each section
+        function initializeRecording(startButtonId, stopButtonId, statusId, playbackId) {
+            let mediaRecorder;
+            let audioChunks = [];
+            
+            document.getElementById(startButtonId).addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = document.createElement('audio');
+                        audio.src = audioUrl;
+                        audio.controls = true;
+                        document.getElementById(playbackId).innerHTML = '';
+                        document.getElementById(playbackId).appendChild(audio);
+                    };
+                    
+                    mediaRecorder.start();
+                    document.getElementById(startButtonId).disabled = true;
+                    document.getElementById(stopButtonId).disabled = false;
+                    document.getElementById(statusId).textContent = 'Recording...';
+                    audioChunks = [];
+                } catch (err) {
+                    console.error('Error accessing microphone:', err);
+                    alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+                }
+            });
+            
+            document.getElementById(stopButtonId).addEventListener('click', () => {
+                mediaRecorder.stop();
+                document.getElementById(startButtonId).disabled = false;
+                document.getElementById(stopButtonId).disabled = true;
+                document.getElementById(statusId).textContent = 'Recording stopped';
+            });
+        }
+
+        // Initialize all recording sections
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeRecording('startNamingRecording', 'stopNamingRecording', 
+                               'namingRecordingStatus', 'namingAudioPlayback');
+            initializeRecording('startSentenceRecording', 'stopSentenceRecording', 
+                               'sentenceRecordingStatus', 'sentenceAudioPlayback');
+            initializeRecording('startArticulationRecording', 'stopArticulationRecording', 
+                               'articulationRecordingStatus', 'articulationAudioPlayback');
+        });
+
+        // Tongue Twisters
+        const tongueTwisters = [
+            "Peter Piper picked a peck of pickled peppers",
+            "She sells seashells by the seashore",
+            "How much wood would a woodchuck chuck",
+            "Red lorry, yellow lorry",
+            "Unique New York",
+            "Six slick slim sycamore saplings"
+        ];
+
+        function loadNewTwister() {
+            const twister = tongueTwisters[Math.floor(Math.random() * tongueTwisters.length)];
+            $('#currentTwister').text(twister);
+        }
+
+        // Tongue Exercise Timers
+        function initializeTongueExercises() {
+            $('.start-exercise-timer').off('click').on('click', function() {
+                const exercise = $(this).data('exercise');
+                const timerDisplay = $(this).siblings('.timer-display');
+                startExerciseTimer(timerDisplay);
+            });
+        }
+
+        function startExerciseTimer(display) {
+            let timeLeft = 30; // 30 seconds for each exercise
+            display.text(`${timeLeft} seconds`);
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                display.text(`${timeLeft} seconds`);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    display.text('Complete!');
+                }
+            }, 1000);
+        }
+
+        // Progress Tracking
+        $('.exercise-checkbox').on('change', function() {
+            // Save progress to localStorage
+            const exercise = $(this).prev().text();
+            const completed = $(this).is(':checked');
+            localStorage.setItem(`exercise_${exercise}`, completed);
+        });
+
+        $('#saveNotes').on('click', function() {
+            const notes = $('#exerciseNotes').val();
+            localStorage.setItem('exercise_notes', notes);
+            alert('Notes saved!');
+        });
+
+        // Add this function to load exercise content
+        function loadExerciseContent(exerciseType) {
+            $.get(`/load_exercise/${exerciseType}`, function(data) {
+                $('#exercise-content').html(data).removeClass('hidden');
+            });
+        }
+    </script>
+</body>
+</html>

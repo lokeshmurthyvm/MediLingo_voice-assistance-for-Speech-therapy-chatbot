@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Exercises</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl font-bold mb-6 text-blue-600">Breathing Exercises</h2>
+        
+        <!-- Deep Breathing Section -->
+        <div class="mb-8">
+            <h3 class="text-xl font-bold mb-4">Deep Breathing Exercise</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="mb-4">Instructions:</p>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Sit comfortably with your back straight</li>
+                    <li>Breathe in through your nose for 4 counts</li>
+                    <li>Hold your breath for 4 counts</li>
+                    <li>Exhale slowly through your mouth for 4 counts</li>
+                </ol>
+                <div class="mt-4">
+                    <p class="font-semibold">Timer: <span id="deepBreathingTimer">30</span> seconds</p>
+                    <button id="startDeepBreathing" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                        Start Exercise
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diaphragmatic Breathing Section -->
+        <div class="mb-8">
+            <h3 class="text-xl font-bold mb-4">Diaphragmatic Breathing Exercise</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="mb-4">Instructions:</p>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Lie on your back with knees bent</li>
+                    <li>Place one hand on your chest and one on your belly</li>
+                    <li>Breathe in through your nose, feeling your belly rise</li>
+                    <li>Exhale through pursed lips, feeling your belly lower</li>
+                </ol>
+                <div class="mt-4">
+                    <p class="font-semibold">Timer: <span id="diaphragmaticTimer">30</span> seconds</p>
+                    <button id="startDiaphragmatic" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                        Start Exercise
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recording Section -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-bold mb-4">Record Your Practice</h3>
+            <div class="space-y-4">
+                <button id="startRecording" class="bg-blue-500 text-white px-4 py-2 rounded">
+                    Start Recording
+                </button>
+                <button id="stopRecording" class="bg-red-500 text-white px-4 py-2 rounded" disabled>
+                    Stop Recording
+                </button>
+                <div id="recordingStatus" class="text-gray-600"></div>
+                <div id="audioPlayback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer functionality
+        function startTimer(elementId, duration, callback) {
+            let timeLeft = duration;
+            const timerElement = document.getElementById(elementId);
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (callback) callback();
+                }
+            }, 1000);
+        }
+
+        // Deep Breathing Exercise
+        document.getElementById('startDeepBreathing').addEventListener('click', function() {
+            startTimer('deepBreathingTimer', 30, () => {
+                alert('Deep breathing exercise completed!');
+            });
+        });
+
+        // Diaphragmatic Breathing Exercise
+        document.getElementById('startDiaphragmatic').addEventListener('click', function() {
+            startTimer('diaphragmaticTimer', 30, () => {
+                alert('Diaphragmatic breathing exercise completed!');
+            });
+        });
+
+        // Recording functionality
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById('startRecording').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = document.createElement('audio');
+                    audio.src = audioUrl;
+                    audio.controls = true;
+                    document.getElementById('audioPlayback').innerHTML = '';
+                    document.getElementById('audioPlayback').appendChild(audio);
+                };
+                
+                mediaRecorder.start();
+                document.getElementById('startRecording').disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+                document.getElementById('recordingStatus').textContent = 'Recording...';
+                audioChunks = [];
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+            }
+        });
+
+        document.getElementById('stopRecording').addEventListener('click', () => {
+            mediaRecorder.stop();
+            document.getElementById('startRecording').disabled = false;
+            document.getElementById('stopRecording').disabled = true;
+            document.getElementById('recordingStatus').textContent = 'Recording stopped';
+        });
+    </script>
+</body>
+</html>

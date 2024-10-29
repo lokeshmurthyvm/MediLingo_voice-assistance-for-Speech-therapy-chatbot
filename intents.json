@@ -1,0 +1,55 @@
+{
+    "intents": [
+        {
+            "intent": "hey",
+            "responses": ["Hello! How can I assist you today?", "Hi there! What would you like to know?"]
+        },
+        {
+            "intent": "exercise",
+            "responses": ["I can help you with various exercises. Here are the available types: breathing, articulation, tongue, naming practice, sentence practicing, practicing speech sounds."],
+            "exercises": ["breathing", "articulation", "tongue", "naming", "sentence", "speech sounds"]
+        },
+        {
+            "intent": "breathing",
+            "responses": ["Let's do some breathing exercises. Please select a type of breathing exercise."],
+            "exercises": ["breathing"]
+        },
+        {
+            "intent": "articulation",
+            "responses": ["Great! We can work on articulation. Please select an articulation exercise."],
+            "exercises": ["articulation"]
+        },
+        {
+            "intent": "tongue",
+            "responses": ["Let's focus on tongue exercises. Please select a tongue exercise."],
+            "exercises": ["tongue"]
+        },
+        {
+            "intent": "naming",
+            "responses": ["Let's practice naming objects. Please select a naming exercise."],
+            "exercises": ["naming"]
+        },
+        {
+            "intent": "sentence",
+            "responses": ["Let's practice forming sentences. Please select a sentence exercise."],
+            "exercises": ["sentence"]
+        },
+        {
+            "intent": "speech_sounds",
+            "responses": ["Let's practice speech sounds. Please select a speech sound exercise."],
+            "exercises": ["speech sounds"]
+        },
+        {
+            "intent": "help",
+            "responses": ["Sure! I can assist you with speech therapy exercises. Please select an exercise type."]
+        },
+        {
+            "intent": "thank_you",
+            "responses": ["You're welcome! Let me know if you need anything else."]
+        },
+        {
+            "intent": "unknown",
+            "responses": ["I'm not sure how to respond to that. Can you ask about exercises or help?"]
+        }
+    ]
+}
