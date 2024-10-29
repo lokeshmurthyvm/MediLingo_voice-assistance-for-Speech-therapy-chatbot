@@ -1,0 +1,10 @@
+flask
+torch
+openai-whisper
+numpy
+pyttsx3
+sounddevice
+scipy
+pyaudio
+pydub
+pyaudio-portaudio
