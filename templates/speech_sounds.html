@@ -23,16 +23,44 @@
                 <div class="space-y-4">
                     <div class="practice-item">
                         <p class="mb-2">Simple 'S': "Sun"</p>
-                        <audio controls>
+                        <audio controls class="mb-2">
                             <source src="/static/audio/s_sun.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
+                        <!-- Recording controls for Sun -->
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
                     </div>
                     <div class="practice-item">
                         <p class="mb-2">Initial 'S': "Snake"</p>
-                        <audio controls>
+                        <audio controls class="mb-2">
                             <source src="/static/audio/s_snake.mp3" type="audio/mpeg">
                         </audio>
+                        <!-- Recording controls for Snake -->
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,15 +71,43 @@
                 <div class="space-y-4">
                     <div class="practice-item">
                         <p class="mb-2">Simple 'R': "Red"</p>
-                        <audio controls>
+                        <audio controls class="mb-2">
                             <source src="/static/audio/r_red.mp3" type="audio/mpeg">
                         </audio>
+                        <!-- Recording controls for Red -->
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
                     </div>
                     <div class="practice-item">
                         <p class="mb-2">Initial 'R': "Rain"</p>
-                        <audio controls>
+                        <audio controls class="mb-2">
                             <source src="/static/audio/r_rain.mp3" type="audio/mpeg">
                         </audio>
+                        <!-- Recording controls for Rain -->
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -62,13 +118,126 @@
                 <div class="space-y-4">
                     <div class="practice-item">
                         <p class="mb-2">Soft 'TH': "Think"</p>
-                        <audio controls>
+                        <audio controls class="mb-2">
                             <source src="/static/audio/th_think.mp3" type="audio/mpeg">
                         </audio>
+                        <!-- Recording controls for Think -->
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .recording-controls {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+        }
+
+        .recording-status {
+            font-size: 0.875rem;
+        }
+
+        .submit-audio:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .start-recording:disabled,
+        .stop-recording:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script>
+        // Recording functionality
+        document.querySelectorAll('.practice-item').forEach(item => {
+            let mediaRecorder;
+            let audioChunks = [];
+            const startButton = item.querySelector('.start-recording');
+            const stopButton = item.querySelector('.stop-recording');
+            const submitButton = item.querySelector('.submit-audio');
+            const statusDiv = item.querySelector('.recording-status');
+            const playbackDiv = item.querySelector('.playback');
+            let audioBlob = null;
+
+            startButton.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = document.createElement('audio');
+                        audio.src = audioUrl;
+                        audio.controls = true;
+                        playbackDiv.innerHTML = '';
+                        playbackDiv.appendChild(audio);
+                        submitButton.disabled = false;
+                    };
+                    
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    startButton.disabled = true;
+                    stopButton.disabled = false;
+                    statusDiv.textContent = 'Recording...';
+                } catch (err) {
+                    console.error('Error accessing microphone:', err);
+                    statusDiv.textContent = 'Error: Could not access microphone';
+                }
+            });
+
+            stopButton.addEventListener('click', () => {
+                mediaRecorder.stop();
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                statusDiv.textContent = 'Recording stopped';
+            });
+
+            submitButton.addEventListener('click', async () => {
+                if (!audioBlob) return;
+
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.wav');
+                formData.append('word', item.querySelector('p').textContent.trim());
+
+                try {
+                    const response = await fetch('/submit_audio', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        statusDiv.textContent = 'Recording submitted successfully!';
+                        submitButton.disabled = true;
+                    } else {
+                        statusDiv.textContent = 'Error submitting recording';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    statusDiv.textContent = 'Error submitting recording';
+                }
+            });
+        });
+    </script>
 </body>
-</html> 
+</html>

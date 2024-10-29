@@ -3,6 +3,8 @@ from utils import AudioHandler, ExerciseManager
 import os
 import json
 import random
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 audio_handler = AudioHandler()
@@ -70,10 +72,42 @@ def chatbot():
         'exercises': []
     })
 
+
+@app.route('/submit_audio', methods=['POST'])
+def submit_audio():
+    if 'audio' not in request.files:
+        return jsonify({'error': 'No audio file'}), 400
+    
+    audio_file = request.files['audio']
+    word = request.form.get('word', 'unknown')
+    
+    if audio_file:
+        filename = secure_filename(f"{word}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.wav")
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        audio_file.save(filepath)
+        return jsonify({'success': True, 'filename': filename}), 200
+    
+    return jsonify({'error': 'Invalid audio file'}), 400
+@app.route('/articulation')
+def articulation():
+    return render_template('articulation.html')
+
+@app.route('/sentence')
+def sentence():
+    return render_template('sentence.html')
+
+@app.route('/tongue')
+def tongue():
+    return render_template('tongue.html')
+
 @app.route('/load_exercise/<exercise_type>')
 def load_exercise(exercise_type):
     """Load specific exercise content"""
     return render_template(f'{exercise_type}.html')
+# Add this to your existing routes
+@app.route('/static/js/<path:filename>')
+def serve_static_js(filename):
+    return send_from_directory('static/js', filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

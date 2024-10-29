@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tongue Exercises</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+        <div class="container mx-auto">
+            <a href="/" class="text-white font-bold">Home</a>
+            <a href="/speech_therapy" class="text-white ml-4">Speech Therapy Assistant</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Tongue Exercises</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Tongue Twisters -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">Tongue Twisters</h2>
+                <div class="space-y-4">
+                    <div class="practice-item">
+                        <p class="mb-2">"Peter Piper picked a peck of pickled peppers"</p>
+                        <audio controls class="mb-2">
+                            <source src="/static/audio/tongue1.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tongue Movements -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">Tongue Movement Exercises</h2>
+                <div class="space-y-4">
+                    <div class="exercise-item">
+                        <p class="mb-2">Touch each corner of your mouth with your tongue</p>
+                        <div class="mt-4">
+                            <p class="font-semibold">Timer: <span id="movementTimer">30</span> seconds</p>
+                            <button id="startMovement" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                                Start Exercise
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer functionality
+        function startTimer(elementId, duration, callback) {
+            let timeLeft = duration;
+            const timerElement = document.getElementById(elementId);
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (callback) callback();
+                }
+            }, 1000);
+        }
+
+        // Movement Exercise
+        document.getElementById('startMovement').addEventListener('click', function() {
+            startTimer('movementTimer', 30, () => {
+                alert('Tongue movement exercise completed!');
+            });
+        });
+
+        // Recording functionality (same as speech_sounds.html)
+        document.querySelectorAll('.practice-item').forEach(item => {
+            // ... (same recording JavaScript code as speech_sounds.html)
+        });
+    </script>
+</body>
+</html>

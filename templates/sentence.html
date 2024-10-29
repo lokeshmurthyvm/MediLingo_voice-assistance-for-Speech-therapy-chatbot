@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Practice</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 p-4">
+        <div class="container mx-auto">
+            <a href="/" class="text-white font-bold">Home</a>
+            <a href="/speech_therapy" class="text-white ml-4">Speech Therapy Assistant</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Sentence Practice</h1>
+
+        <div class="grid grid-cols-1 gap-6">
+            <!-- Simple Sentences -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4">Simple Sentences</h2>
+                <div class="space-y-4">
+                    <div class="practice-item">
+                        <p class="mb-2">"The cat sat on the mat."</p>
+                        <audio controls class="mb-2">
+                            <source src="/static/audio/sentence1.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="practice-item">
+                        <p class="mb-2">"I like to play in the park."</p>
+                        <audio controls class="mb-2">
+                            <source src="/static/audio/sentence2.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the recording script and styles from speech_sounds.html -->
+    <script>
+        // Recording functionality (same as speech_sounds.html)
+        document.querySelectorAll('.practice-item').forEach(item => {
+            // ... (same recording JavaScript code as speech_sounds.html)
+        });
+    </script>
+</body>
+</html>
