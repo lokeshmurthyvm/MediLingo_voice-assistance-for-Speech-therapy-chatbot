@@ -49,11 +49,57 @@
     <script>
         // Object naming specific code
         const objects = [
-            'apple', 'book', 'chair', 'door', 'elephant', 'flower', 
-            'glasses', 'house', 'ice cream', 'jacket', 'key', 'lamp',
-            'moon', 'notebook', 'orange', 'pencil', 'queen', 'rabbit',
-            'sun', 'table', 'umbrella', 'violin', 'watch', 'xylophone',
-            'yacht', 'zebra'
+            {
+                name: 'apple',
+                image: 'picture/apple.jpg',
+                audioRef: 'apple.mp3'
+            },
+            {
+                name: 'book',
+                image: 'picture/book.jpg',
+                audioRef: 'book.mp3'
+            },
+            {
+                name: 'chair',
+                image: 'picture/chair.jpg',
+                audioRef: 'chair.mp3'
+            },
+            {
+                name: 'door',
+                image: 'picture/door.jpg',
+                audioRef: 'door.mp3'
+            },
+            {
+                name: 'elephant',
+                image: 'picture/elephant.jpg',
+                audioRef: 'elephant.mp3'
+            },
+            {
+                name: 'flower',
+                image: 'picture/flower.jpg',
+                audioRef: 'flower.mp3'
+            },
+            {
+                name: 'glasses',
+                image: 'picture/glasses.jpg',
+                audioRef: 'glasses.mp3'
+            },
+            {
+                name: 'house',
+                image: 'picture/house.jpg',
+                audioRef: 'house.mp3'
+            },
+            {
+                name: 'icecream',
+                image: 'picture/icecream.jpg',
+                audioRef: 'icecream.mp3'
+            },
+            {
+                name: 'jacket',
+                image: 'picture/jacket.jpg',
+                audioRef: 'jacket.mp3'
+            },
+            // Add more objects based on your available images
         ];
 
         function shuffleArray(array) {
@@ -74,11 +120,11 @@
                 const div = document.createElement('div');
                 div.className = 'text-center p-4 border rounded';
                 div.innerHTML = `
-                    <img src="/static/images/objects/${object}.jpg" 
-                         alt="${object}" 
+                    <img src="/static/images/objects/${object.image}" 
+                         alt="${object.name}" 
                          class="w-full h-32 object-cover rounded mb-2">
                     <button class="bg-gray-200 px-4 py-1 rounded w-full"
-                            onclick="showObjectName(this, '${object}')">
+                            onclick="showObjectName(this, '${object.name}')">
                         Show Name
                     </button>
                 `;
