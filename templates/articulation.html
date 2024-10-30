@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Articulation Exercises</title>
+    <title>Articulation Practice</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
@@ -15,63 +15,154 @@
     </nav>
 
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Articulation Exercises</h1>
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Articulation Practice</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Consonant Practice -->
             <div class="bg-white p-6 rounded-lg shadow">
                 <h2 class="text-xl font-bold mb-4">Consonant Practice</h2>
-                <div class="space-y-4">
-                    <div class="practice-item">
+                <div class="space-y-6">
+                    <div class="practice-item" data-sound="p_pat">
                         <p class="mb-2">Practice "P" sound: "Pat"</p>
-                        <audio controls class="mb-2">
+                        <audio controls class="mb-2 reference-audio">
                             <source src="{{ url_for('static', filename='articulation_audio/p_pat.mp3') }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
                         </audio>
-                    </div>
-                    <div class="practice-item">
-                        <p class="mb-2">Practice "B" sound: "Ball"</p>
-                        <audio controls class="mb-2">
-                            <source src="{{ url_for('static', filename='articulation_audio/b_ball.mp3') }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vowel Practice -->
-            <div class="bg-white p-6 rounded-lg shadow">
-                <h2 class="text-xl font-bold mb-4">Vowel Practice</h2>
-                <div class="space-y-4">
-                    <div class="practice-item">
-                        <p class="mb-2">Long "A" sound: "Day"</p>
-                        <audio controls class="mb-2">
-                            <source src="/static/articulation_audio/a_day.mp3" type="audio/mpeg">
-                        </audio>
-                        <div class="recording-controls mt-2">
+                        
+                        <div class="recording-controls">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
                                 Start Recording
                             </button>
                             <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
                                 Stop Recording
                             </button>
-                            <div class="recording-status text-gray-600 mt-2"></div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="recording-status text-gray-600"></div>
                             <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
+                            <button class="analyze-speech bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Analyze Speech
                             </button>
                         </div>
+                        
+                        <div class="analysis-results mt-4 hidden">
+                            <h3 class="font-bold mb-2">Analysis Results:</h3>
+                            <div class="results-content space-y-2">
+                                <!-- Results will be inserted here -->
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Add more practice items as needed -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Include the recording script and styles from speech_sounds.html -->
     <script>
-        // Recording functionality (same as speech_sounds.html)
         document.querySelectorAll('.practice-item').forEach(item => {
-            // ... (same recording JavaScript code as speech_sounds.html)
+            let mediaRecorder;
+            let audioChunks = [];
+            const startButton = item.querySelector('.start-recording');
+            const stopButton = item.querySelector('.stop-recording');
+            const analyzeButton = item.querySelector('.analyze-speech');
+            const statusDiv = item.querySelector('.recording-status');
+            const playbackDiv = item.querySelector('.playback');
+            const resultsDiv = item.querySelector('.analysis-results');
+            const resultsContent = item.querySelector('.results-content');
+            const soundId = item.dataset.sound;
+
+            startButton.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = document.createElement('audio');
+                        audio.src = audioUrl;
+                        audio.controls = true;
+                        playbackDiv.innerHTML = '';
+                        playbackDiv.appendChild(audio);
+                        analyzeButton.disabled = false;
+                        
+                        // Store the recorded audio for analysis
+                        item.recordedBlob = audioBlob;
+                    };
+                    
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    startButton.disabled = true;
+                    stopButton.disabled = false;
+                    statusDiv.textContent = 'Recording...';
+                    
+                } catch (err) {
+                    console.error('Error accessing microphone:', err);
+                    statusDiv.textContent = 'Error: Could not access microphone';
+                }
+            });
+
+            stopButton.addEventListener('click', () => {
+                mediaRecorder.stop();
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                statusDiv.textContent = 'Recording stopped';
+            });
+
+            analyzeButton.addEventListener('click', async () => {
+                if (!item.recordedBlob) {
+                    statusDiv.textContent = 'No recording available for analysis';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('audio', item.recordedBlob);
+                formData.append('sound_id', soundId);
+
+                try {
+                    const response = await fetch('/analyze_speech', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const results = await response.json();
+                    
+                    if (results.status === 'success') {
+                        resultsDiv.classList.remove('hidden');
+                        resultsContent.innerHTML = `
+                            <div class="bg-gray-100 p-4 rounded">
+                                <p class="mb-2"><strong>Pitch Stability:</strong> ${(results.pitch_stability * 100).toFixed(1)}%</p>
+                                <p class="mb-2"><strong>Articulation Clarity:</strong> ${(results.articulation_clarity * 100).toFixed(1)}%</p>
+                                <p class="mb-2"><strong>Rhythm Timing:</strong> ${(results.rhythm_timing * 100).toFixed(1)}%</p>
+                                <p class="mb-2"><strong>Volume Consistency:</strong> ${(results.volume_consistency * 100).toFixed(1)}%</p>
+                                <p class="mb-2"><strong>Phonation Quality:</strong> ${(results.phonation_quality * 100).toFixed(1)}%</p>
+                                <p class="mb-2"><strong>Overall Score:</strong> ${(results.overall_assessment * 100).toFixed(1)}%</p>
+                                <p class="mt-4 ${results.overall_assessment >= 0.7 ? 'text-green-600' : 'text-yellow-600'}">
+                                    <strong>Feedback:</strong> ${results.feedback}
+                                </p>
+                                ${results.suggestions.length > 0 ? `
+                                    <div class="mt-4">
+                                        <strong>Suggestions for Improvement:</strong>
+                                        <ul class="list-disc list-inside mt-2">
+                                            ${results.suggestions.map(suggestion => `<li>${suggestion}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    } else {
+                        resultsContent.innerHTML = `<p class="text-red-600">Error: ${results.message}</p>`;
+                    }
+                } catch (err) {
+                    console.error('Error analyzing speech:', err);
+                    resultsContent.innerHTML = '<p class="text-red-600">Error analyzing speech. Please try again.</p>';
+                }
+            });
         });
     </script>
 </body>

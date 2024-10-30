@@ -22,11 +22,10 @@
             <div class="bg-white p-6 rounded-lg shadow">
                 <h2 class="text-xl font-bold mb-4">Simple Sentences</h2>
                 <div class="space-y-4">
-                    <div class="practice-item">
+                    <div class="practice-item" data-sound="sentence1">
                         <p class="mb-2">"The cat sat on the mat."</p>
-                        <audio controls class="mb-2">
+                        <audio controls class="mb-2 reference-audio">
                             <source src="{{ url_for('static', filename='sentence_audio/sentence2.mp3') }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
@@ -37,17 +36,20 @@
                             </button>
                             <div class="recording-status text-gray-600 mt-2"></div>
                             <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
+                            <button class="analyze-speech bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Analyze Speech
                             </button>
+                            <div class="analysis-results mt-4 hidden">
+                                <h3 class="font-bold mb-2">Analysis Results:</h3>
+                                <div class="results-content space-y-2"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="practice-item">
+                    <div class="practice-item" data-sound="sentence2">
                         <p class="mb-2">"I like to play in the park."</p>
-                        <audio controls class="mb-2">
+                        <audio controls class="mb-2 reference-audio">
                             <source src="{{ url_for('static', filename='sentence_audio/sentence1.mp3') }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
@@ -58,9 +60,13 @@
                             </button>
                             <div class="recording-status text-gray-600 mt-2"></div>
                             <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
+                            <button class="analyze-speech bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Analyze Speech
                             </button>
+                            <div class="analysis-results mt-4 hidden">
+                                <h3 class="font-bold mb-2">Analysis Results:</h3>
+                                <div class="results-content space-y-2"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -68,11 +74,21 @@
         </div>
     </div>
 
-    <!-- Include the recording script and styles from speech_sounds.html -->
+    <script src="{{ url_for('static', filename='js/speech_recorder.js') }}"></script>
     <script>
-        // Recording functionality (same as speech_sounds.html)
+        // Initialize a recorder for each practice item
         document.querySelectorAll('.practice-item').forEach(item => {
-            // ... (same recording JavaScript code as speech_sounds.html)
+            const soundId = item.dataset.sound;
+            new SpeechRecorder({
+                soundId: soundId,
+                startButtonSelector: `[data-sound="${soundId}"] .start-recording`,
+                stopButtonSelector: `[data-sound="${soundId}"] .stop-recording`,
+                analyzeButtonSelector: `[data-sound="${soundId}"] .analyze-speech`,
+                statusSelector: `[data-sound="${soundId}"] .recording-status`,
+                playbackSelector: `[data-sound="${soundId}"] .playback`,
+                resultsSelector: `[data-sound="${soundId}"] .analysis-results`,
+                resultsContentSelector: `[data-sound="${soundId}"] .results-content`
+            });
         });
     </script>
 </body>

@@ -22,11 +22,10 @@
             <div class="bg-white p-6 rounded-lg shadow">
                 <h2 class="text-xl font-bold mb-4">Tongue Twisters</h2>
                 <div class="space-y-4">
-                    <div class="practice-item">
+                    <div class="practice-item" data-sound="peter_piper">
                         <p class="mb-2">"Peter Piper picked a peck of pickled peppers"</p>
-                        <audio controls class="mb-2">
-                            <source src="{{ url_for('static', filename='tongue_audio/Peter Piper.mp3') }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
+                        <audio controls class="mb-2 reference-audio">
+                            <source src="{{ url_for('static', filename='tongue_audio/Peter_piper.mp3') }}" type="audio/mpeg">
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
@@ -37,16 +36,20 @@
                             </button>
                             <div class="recording-status text-gray-600 mt-2"></div>
                             <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
+                            <button class="analyze-speech bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Analyze Speech
                             </button>
+                            <div class="analysis-results mt-4 hidden">
+                                <h3 class="font-bold mb-2">Analysis Results:</h3>
+                                <div class="results-content space-y-2"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="practice-item">
+
+                    <div class="practice-item" data-sound="seashells">
                         <p class="mb-2">"She sells seashells by the seashore"</p>
-                        <audio controls class="mb-2">
+                        <audio controls class="mb-2 reference-audio">
                             <source src="{{ url_for('static', filename='tongue_audio/seashells.mp3') }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
@@ -57,9 +60,13 @@
                             </button>
                             <div class="recording-status text-gray-600 mt-2"></div>
                             <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
+                            <button class="analyze-speech bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Analyze Speech
                             </button>
+                            <div class="analysis-results mt-4 hidden">
+                                <h3 class="font-bold mb-2">Analysis Results:</h3>
+                                <div class="results-content space-y-2"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,12 +77,32 @@
                 <h2 class="text-xl font-bold mb-4">Tongue Movement Exercises</h2>
                 <div class="space-y-4">
                     <div class="exercise-item">
-                        <p class="mb-2">Touch each corner of your mouth with your tongue</p>
-                        <div class="mt-4">
-                            <p class="font-semibold">Timer: <span id="movementTimer">30</span> seconds</p>
-                            <button id="startMovement" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                        <h3 class="font-semibold mb-2">Up and Down Movement</h3>
+                        <p class="text-gray-600 mb-4">
+                            Touch the roof of your mouth, then lower your tongue. Repeat for 30 seconds.
+                        </p>
+                        <div class="flex items-center space-x-4">
+                            <button id="startMovement" class="bg-blue-500 text-white px-4 py-2 rounded">
                                 Start Exercise
                             </button>
+                            <div class="text-xl font-bold">
+                                Time: <span id="movementTimer">30</span>s
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-item mt-6">
+                        <h3 class="font-semibold mb-2">Side to Side Movement</h3>
+                        <p class="text-gray-600 mb-4">
+                            Touch the corners of your mouth with your tongue alternately. Repeat for 30 seconds.
+                        </p>
+                        <div class="flex items-center space-x-4">
+                            <button id="startSideMovement" class="bg-blue-500 text-white px-4 py-2 rounded">
+                                Start Exercise
+                            </button>
+                            <div class="text-xl font-bold">
+                                Time: <span id="sideMovementTimer">30</span>s
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,7 +110,23 @@
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/speech_recorder.js') }}"></script>
     <script>
+        // Initialize speech recorders for each practice item
+        document.querySelectorAll('.practice-item').forEach(item => {
+            const soundId = item.dataset.sound;
+            new SpeechRecorder({
+                soundId: soundId,
+                startButtonSelector: `[data-sound="${soundId}"] .start-recording`,
+                stopButtonSelector: `[data-sound="${soundId}"] .stop-recording`,
+                analyzeButtonSelector: `[data-sound="${soundId}"] .analyze-speech`,
+                statusSelector: `[data-sound="${soundId}"] .recording-status`,
+                playbackSelector: `[data-sound="${soundId}"] .playback`,
+                resultsSelector: `[data-sound="${soundId}"] .analysis-results`,
+                resultsContentSelector: `[data-sound="${soundId}"] .results-content`
+            });
+        });
+
         // Timer functionality
         function startTimer(elementId, duration, callback) {
             let timeLeft = duration;
@@ -98,18 +141,27 @@
                     if (callback) callback();
                 }
             }, 1000);
+
+            return timer;
         }
 
-        // Movement Exercise
+        // Movement Exercise Timers
         document.getElementById('startMovement').addEventListener('click', function() {
+            const button = this;
+            button.disabled = true;
             startTimer('movementTimer', 30, () => {
-                alert('Tongue movement exercise completed!');
+                button.disabled = false;
+                alert('Up and down movement exercise completed!');
             });
         });
 
-        // Recording functionality (same as speech_sounds.html)
-        document.querySelectorAll('.practice-item').forEach(item => {
-            // ... (same recording JavaScript code as speech_sounds.html)
+        document.getElementById('startSideMovement').addEventListener('click', function() {
+            const button = this;
+            button.disabled = true;
+            startTimer('sideMovementTimer', 30, () => {
+                button.disabled = false;
+                alert('Side to side movement exercise completed!');
+            });
         });
     </script>
 </body>
