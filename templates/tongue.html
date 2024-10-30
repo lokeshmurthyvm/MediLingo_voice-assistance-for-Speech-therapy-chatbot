@@ -25,7 +25,28 @@
                     <div class="practice-item">
                         <p class="mb-2">"Peter Piper picked a peck of pickled peppers"</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/tongue1.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='tongue_audio/Peter Piper.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <div class="recording-controls mt-2">
+                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
+                                Start Recording
+                            </button>
+                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
+                                Stop Recording
+                            </button>
+                            <div class="recording-status text-gray-600 mt-2"></div>
+                            <div class="playback mt-2"></div>
+                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
+                                Submit Recording
+                            </button>
+                        </div>
+                    </div>
+                    <div class="practice-item">
+                        <p class="mb-2">"She sells seashells by the seashore"</p>
+                        <audio controls class="mb-2">
+                            <source src="{{ url_for('static', filename='tongue_audio/seashells.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">

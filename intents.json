@@ -51,5 +51,6 @@
             "intent": "unknown",
             "responses": ["I'm not sure how to respond to that. Can you ask about exercises or help?"]
         }
+       
     ]
 }

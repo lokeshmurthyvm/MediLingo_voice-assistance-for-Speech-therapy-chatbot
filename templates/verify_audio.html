@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Files Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="p-8">
+    <h1 class="text-2xl mb-4">Audio Files Verification</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for result in results %}
+        <div class="bg-white p-4 rounded shadow">
+            <p class="font-bold">{{ result.folder }}/{{ result.file }}</p>
+            <p class="text-sm text-gray-600">Path: {{ result.path }}</p>
+            <p class="mt-2 {{ 'text-green-600' if result.exists else 'text-red-600' }}">
+                Status: {{ 'File exists' if result.exists else 'File missing' }}
+            </p>
+            {% if result.exists %}
+            <div class="mt-2">
+                <audio controls>
+                    <source src="{{ url_for('static', filename=result.folder + '/' + result.file) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html> 

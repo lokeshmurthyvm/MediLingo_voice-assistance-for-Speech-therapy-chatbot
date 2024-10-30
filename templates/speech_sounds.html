@@ -22,45 +22,18 @@
                 <h2 class="text-xl font-bold mb-4">'S' Sound Practice</h2>
                 <div class="space-y-4">
                     <div class="practice-item">
-                        <p class="mb-2">Simple 'S': "Sun"</p>
+                        <p class="mb-2">Initial 'S': "Sun"</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/s_sun.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='speech_audio/s_sun.mp3') }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
-                        <!-- Recording controls for Sun -->
-                        <div class="recording-controls mt-2">
-                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
-                                Start Recording
-                            </button>
-                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
-                                Stop Recording
-                            </button>
-                            <div class="recording-status text-gray-600 mt-2"></div>
-                            <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
-                            </button>
-                        </div>
                     </div>
                     <div class="practice-item">
                         <p class="mb-2">Initial 'S': "Snake"</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/s_snake.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='speech_audio/s_snake.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
                         </audio>
-                        <!-- Recording controls for Snake -->
-                        <div class="recording-controls mt-2">
-                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
-                                Start Recording
-                            </button>
-                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
-                                Stop Recording
-                            </button>
-                            <div class="recording-status text-gray-600 mt-2"></div>
-                            <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -70,44 +43,11 @@
                 <h2 class="text-xl font-bold mb-4">'R' Sound Practice</h2>
                 <div class="space-y-4">
                     <div class="practice-item">
-                        <p class="mb-2">Simple 'R': "Red"</p>
+                        <p class="mb-2">Initial 'R': "Red"</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/r_red.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='speech_audio/r_red.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
                         </audio>
-                        <!-- Recording controls for Red -->
-                        <div class="recording-controls mt-2">
-                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
-                                Start Recording
-                            </button>
-                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
-                                Stop Recording
-                            </button>
-                            <div class="recording-status text-gray-600 mt-2"></div>
-                            <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
-                            </button>
-                        </div>
-                    </div>
-                    <div class="practice-item">
-                        <p class="mb-2">Initial 'R': "Rain"</p>
-                        <audio controls class="mb-2">
-                            <source src="/static/audio/r_rain.mp3" type="audio/mpeg">
-                        </audio>
-                        <!-- Recording controls for Rain -->
-                        <div class="recording-controls mt-2">
-                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
-                                Start Recording
-                            </button>
-                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
-                                Stop Recording
-                            </button>
-                            <div class="recording-status text-gray-600 mt-2"></div>
-                            <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

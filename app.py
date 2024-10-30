@@ -109,5 +109,43 @@ def load_exercise(exercise_type):
 def serve_static_js(filename):
     return send_from_directory('static/js', filename)
 
+@app.route('/verify_audio')
+def verify_audio():
+    """Verify all audio files exist and are accessible"""
+    audio_files = {
+        'speech_audio': [
+            's_sun.mp3',
+            's_snake.mp3',
+            'r_red.mp3',
+            'r_rain.mp3'
+        ],
+        'sentence_audio': [
+            'sentence1_cat.mp3',
+            'sentence2_park.mp3'
+        ],
+        'tongue_audio': [
+            'peter_piper.mp3',
+            'seashells.mp3'
+        ],
+        'articulation_audio': [
+            'p_pat.mp3',
+            'b_ball.mp3'
+        ]
+    }
+    
+    results = []
+    for folder, files in audio_files.items():
+        for file in files:
+            path = os.path.join('static', folder, file)
+            exists = os.path.exists(path)
+            results.append({
+                'folder': folder,
+                'file': file,
+                'exists': exists,
+                'path': path
+            })
+    
+    return render_template('verify_audio.html', results=results)
+
 if __name__ == '__main__':
     app.run(debug=True)

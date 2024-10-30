@@ -25,7 +25,8 @@
                     <div class="practice-item">
                         <p class="mb-2">"The cat sat on the mat."</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/sentence1.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='sentence_audio/sentence2.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
@@ -45,7 +46,8 @@
                     <div class="practice-item">
                         <p class="mb-2">"I like to play in the park."</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/sentence2.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='sentence_audio/sentence1.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">

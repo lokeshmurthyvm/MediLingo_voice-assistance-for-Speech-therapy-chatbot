@@ -25,21 +25,16 @@
                     <div class="practice-item">
                         <p class="mb-2">Practice "P" sound: "Pat"</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/p_pat.mp3" type="audio/mpeg">
+                            <source src="{{ url_for('static', filename='articulation_audio/p_pat.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
                         </audio>
-                        <div class="recording-controls mt-2">
-                            <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
-                                Start Recording
-                            </button>
-                            <button class="stop-recording bg-red-500 text-white px-4 py-2 rounded" disabled>
-                                Stop Recording
-                            </button>
-                            <div class="recording-status text-gray-600 mt-2"></div>
-                            <div class="playback mt-2"></div>
-                            <button class="submit-audio bg-blue-500 text-white px-4 py-2 rounded mt-2" disabled>
-                                Submit Recording
-                            </button>
-                        </div>
+                    </div>
+                    <div class="practice-item">
+                        <p class="mb-2">Practice "B" sound: "Ball"</p>
+                        <audio controls class="mb-2">
+                            <source src="{{ url_for('static', filename='articulation_audio/b_ball.mp3') }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
                     </div>
                 </div>
             </div>
@@ -51,7 +46,7 @@
                     <div class="practice-item">
                         <p class="mb-2">Long "A" sound: "Day"</p>
                         <audio controls class="mb-2">
-                            <source src="/static/audio/a_day.mp3" type="audio/mpeg">
+                            <source src="/static/articulation_audio/a_day.mp3" type="audio/mpeg">
                         </audio>
                         <div class="recording-controls mt-2">
                             <button class="start-recording bg-green-500 text-white px-4 py-2 rounded mr-2">
